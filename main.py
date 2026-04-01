@@ -24,6 +24,7 @@ def list_products(
     min_price: Optional[int] = Query(None, ge=0, description="Minimum price"),
     max_price: Optional[int] = Query(None, ge=0, description="Maximum price"),
     in_stock: Optional[bool] = Query(None, description="Filter by stock status"),
+    search: Optional[str] = Query(None, max_length=80, description="Search by name"),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=100)
 ):
@@ -36,6 +37,7 @@ def list_products(
         min_price=min_price, 
         max_price=max_price, 
         in_stock=in_stock,
+        search=search,
         skip=skip, 
         limit=limit
     )
