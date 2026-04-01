@@ -37,6 +37,10 @@ def get_products(min_price: int = None, max_price: int = None,
         if in_stock is not None:
             query += " AND in_stock = ?"
             params.append(1 if in_stock else 0)
+
+        if search:  # Добавить поиск по имени
+            query += " AND name LIKE ?"
+            params.append(f"%{search}%")
         
         query += " ORDER BY id LIMIT ? OFFSET ?"
         params.extend([limit, skip])
