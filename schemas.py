@@ -18,10 +18,12 @@ class Product(ProductBase):
     class Config:
         from_attributes = True
 
+
 class ProductFilter(BaseModel):
     min_price: Optional[int] = Field(None, ge=0)
     max_price: Optional[int] = Field(None, ge=0)
     in_stock: Optional[bool] = None
+    search: Optional[str] = Field(None, max_length=80)
 
     @validator('max_price')
     def validate_price_range(cls, v, values):
