@@ -1,13 +1,23 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+import sqlite3
+import os
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./products.db"
-# Для PostgreSQL: "postgresql://user:password@localhost/dbname"
+DB_PATH = os.path.join(os.path.dirname(__file__), "products.db")
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}  # только для SQLite
-)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+def get_connection():
+    """Получение соединения с БД"""
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row  # Возвращает строки как словари
+    return conn
 
-Base = declarative_base()
+def init_db():
+    """Инициализация базы данных"""
+    with get_connection() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS products (
+                id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                name      TEXT    UNIQUE NOT NULL,
+                price     INTEGER NOT NULL CHECK(price >= 0),
+                in_stock  BOOLEAN DEFAULT 1 NOT NULL
+            )
+        """)
+        conn.commit()
